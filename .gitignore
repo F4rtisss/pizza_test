@@ -1,0 +1,5 @@
+/vendor
+.env
+/.docker/nginx/logs
+/.docker/nginx/logs/error.log
+/.docker/nginx/logs/access.log

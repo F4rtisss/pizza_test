@@ -16,9 +16,9 @@ services:
         restart: unless-stopped
         environment:
             MARIADB_ROOT_PASSWORD: root
-            MARIADB_USER: pizza_usr
-            MARIADB_PASSWORD: pizza_password
-            MARIADB_DATABASE: pizza
+            MARIADB_USER: user
+            MARIADB_PASSWORD: 123qwe
+            MARIADB_DATABASE: database
 
     phpmyadmin:
         image: phpmyadmin:latest
@@ -28,8 +28,8 @@ services:
         environment:
             PMA_ARBITRARY: 1
             PMA_HOST: mariadb
-            PMA_USER: pizza_usr
-            PMA_PASSWORD: pizza_password
+            PMA_USER: user
+            PMA_PASSWORD: 123qwe
 
     redis:
         image: redis:latest
@@ -47,9 +47,9 @@ services:
         environment:
             DB_HOST: mariadb
             DB_PORT: 3306
-            DB_DATABASE: pizza
-            DB_USERNAME: pizza_usr
-            DB_PASSWORD: pizza_password
+            DB_DATABASE: database
+            DB_USERNAME: user
+            DB_PASSWORD: 123qwe
 
             REDIS_HOST: redis
             REDIS_PASSWORD: root
