@@ -68,7 +68,7 @@ class Request
     public static function all(): array
     {
         return array_merge(
-            $_POST, 
+            $_POST,
                 json_decode(file_get_contents('php://input'), true) ?? []
         );
     }

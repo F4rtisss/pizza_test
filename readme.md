@@ -33,3 +33,6 @@
    cp .env.example .env
 
 Готово!
+
+## Документация API
+Доступна в файле openapi.yml
