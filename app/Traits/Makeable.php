@@ -9,7 +9,7 @@ trait Makeable
     /**
      * Создать объект
      */
-    public static function make(): mixed
+    public static function make(): static
     {
         return Application::create()->make(static::class);
     }

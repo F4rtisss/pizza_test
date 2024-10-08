@@ -92,6 +92,8 @@ abstract class AbstractResponse
             header("$name: $value");
         }
 
+        http_response_code($this->status);
+
         return $this;
     }
 

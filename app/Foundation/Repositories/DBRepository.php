@@ -25,7 +25,7 @@ abstract class DBRepository
      */
     public function first(string $sql, array $params = null): mixed
     {
-        $state = $this->DBService->getConnection()->prepare($sql);
+        $state = $this->DBService->pdo->prepare($sql);
         $state->execute($params);
 
         return $state->fetch();
@@ -36,7 +36,7 @@ abstract class DBRepository
      */
     public function get(string $sql, array $params = null): array|false
     {
-        $state = $this->DBService->getConnection()->prepare($sql);
+        $state = $this->DBService->pdo->prepare($sql);
         $state->execute($params);
 
         return $state->fetchAll();
@@ -45,10 +45,12 @@ abstract class DBRepository
     /**
      * Вставка
      */
-    public function insert(string $sql, array $params = []): void
+    public function insert(string $sql, array $params = []): int
     {
-        $state = $this->DBService->getConnection()->prepare($sql);
+        $state = $this->DBService->pdo->prepare($sql);
         $state->execute($params);
+
+        return (int) $this->DBService->pdo->lastInsertId();
     }
 
     /**
@@ -56,7 +58,7 @@ abstract class DBRepository
      */
     public function update(string $sql, array $params = []): void
     {
-        $state = $this->DBService->getConnection()->prepare($sql);
+        $state = $this->DBService->pdo->prepare($sql);
         $state->execute($params);
     }
 }

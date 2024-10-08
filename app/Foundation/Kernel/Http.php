@@ -3,7 +3,9 @@
 namespace App\Foundation\Kernel;
 
 use App\Foundation\Application;
+use App\Foundation\Exceptions\RecordNotFound;
 use App\Foundation\Http\AbstractResponse;
+use App\Foundation\Http\Exceptions\ValidationError;
 use App\Foundation\Kernel\Exceptions\ControllerMustReturnAbstractResponseException;
 use App\Foundation\Kernel\Interfaces\KernelContract;
 use App\Foundation\Route;
@@ -37,25 +39,52 @@ class Http implements KernelContract
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                response('404 Not Found', 404)->send();
+                response([
+                    'message' => '404 Not Found',
+                    'success' => false
+                ], 404)->send();
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                response(
-                    'METHOD_NOT_ALLOWED, ALLOWED METHODS: ' . implode($routeInfo[1]),
-                    405
-                )->send();
+                response([
+                    'message' => 'METHOD_NOT_ALLOWED, ALLOWED METHODS: ' . implode($routeInfo[1]),
+                    'success' => false
+                ], 405)->send();
                 break;
             case Dispatcher::FOUND:
-                $handler = $routeInfo[1];
+                ['handler' => $handler, 'middleware' => $middleware] = $routeInfo[1];
                 $vars = $routeInfo[2];
 
-                $response = $this->runController($handler, $vars);
+                /** @var string $concrete */
+                foreach ($middleware as $concrete) {
+                    $response = $concrete::handle($vars);
 
-                if (! $response instanceof AbstractResponse) {
-                    throw new ControllerMustReturnAbstractResponseException($handler, $response);
+                    if ($response instanceof AbstractResponse) {
+                        $response->send();
+                        return;
+                    }
                 }
 
-                $response->send();
+                try {
+                    $response = $this->runController($handler, $vars);
+
+                    if (! $response instanceof AbstractResponse) {
+                        throw new ControllerMustReturnAbstractResponseException($handler, $response);
+                    }
+
+                    $response->send();
+                } catch (ValidationError $validation) {
+                    response([
+                        'success' => false,
+                        'message' => 'Validation error, please check your request.',
+                        'errors' => $validation->errors
+                    ], 405)->send();
+                } catch (RecordNotFound) {
+                    response([
+                        'success' => false,
+                        'message' => 'Record not found.',
+                    ], 404)->send();
+                }
+
                 break;
         }
     }
