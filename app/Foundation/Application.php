@@ -3,6 +3,8 @@
 namespace App\Foundation;
 
 use App\Foundation\Exceptions\AbstractClassNotFoundException;
+use App\Foundation\Kernel\Http;
+use App\Foundation\Kernel\Interfaces\KernelContract;
 use Dotenv\Dotenv;
 
 class Application
@@ -64,17 +66,45 @@ class Application
         /**
          * Инициализация DotEnv
          */
-        Dotenv::createImmutable($this->pathApplication)->load();
+        Dotenv::createImmutable($this->getPathTo())->load();
+
+        /**
+         * Инициализация конфига
+         */
+        Config::load($this->getPathTo('/config'));
 
         /**
          * Регистрация БД
          */
         $this->singleton(DB::class, static fn () => new DB([
-            'host' => $_ENV['DB_HOST'],
-            'dbname' => $_ENV['DB_DATABASE'],
-            'user' => $_ENV['DB_USERNAME'],
-            'password' => $_ENV['DB_PASSWORD']
+            'host' => config('database.host'),
+            'dbname' => config('database.db'),
+            'user' => config('database.username'),
+            'password' => config('database.password')
         ]));
+    }
+
+    /**
+     * Получить путь до папки с корня проекта
+     */
+    public function getPathTo(string $dir = ''): string
+    {
+        return $this->pathApplication . $dir;
+    }
+
+    /**
+     * Поймать http-запрос
+     */
+    public function http(): void
+    {
+        foreach (File::get($this->getPathTo('/routes')) as $file) {
+            File::require($file['path']);
+        }
+
+        /** @var KernelContract $handler */
+        $handler = Application::make(Http::class);
+
+        $handler->handle();
     }
 
     /**

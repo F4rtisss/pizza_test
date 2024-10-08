@@ -3,21 +3,21 @@
 namespace App\Foundation\Repositories;
 
 use App\Foundation\Application;
-use App\Services\DBService;
+use App\Foundation\DB;
 
 abstract class DBRepository
 {
     /**
-     * @var DBService
+     * @var DB
      */
-    private DBService $DBService;
+    private DB $DBService;
 
     /**
      * DBRepository constructor
      */
     public function __construct()
     {
-        $this->DBService = Application::create()->make(DBService::class);
+        $this->DBService = Application::create()->make(DB::class);
     }
 
     /**

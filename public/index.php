@@ -4,5 +4,5 @@
 require '../vendor/autoload.php';
 
 // Создаём приложение
-$app = \App\Foundation\Application::create(__DIR__);
+$app = \App\Foundation\Application::create(dirname(__DIR__))->http();
 
