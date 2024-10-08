@@ -49,11 +49,7 @@ class OrderController extends Controller
      */
     public function show(array $params): \App\Foundation\Http\ResponseJson
     {
-        try {
-            ShowValidation::make($params);
-        } catch (ValidationError) {
-            return $this->response()->error('Заказ не найден', status: 404);
-        }
+        ShowValidation::make($params);
 
         $order = Request::get('order');
 
