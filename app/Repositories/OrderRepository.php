@@ -65,4 +65,12 @@ class OrderRepository extends DBRepository
 
         return array_merge($order, ['items' => array_column($orderItems, 'item_id')]);
     }
+
+    /**
+     * Установить заказу статус: готов
+     */
+    public function isDone(int $orderId): void
+    {
+        $this->update("UPDATE `orders` SET `is_done` = 1 WHERE `id` = ?", [$orderId]);
+    }
 }

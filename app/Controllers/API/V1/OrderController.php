@@ -3,8 +3,6 @@
 namespace App\Controllers\API\V1;
 
 use App\Controllers\Controller;
-use App\Foundation\Exceptions\RecordNotFound;
-use App\Foundation\Http\Exceptions\ValidationError;
 use App\Foundation\Http\Request;
 use App\Repositories\OrderRepository;
 use App\Services\OrderService;
@@ -109,6 +107,8 @@ class OrderController extends Controller
         if ($order['is_done']) {
             return $this->response()->error('Нельзя добавлять товары в завершённый заказ');
         }
+
+        $this->orderRepository->isDone($order['id']);
 
         return $this->response()->success('Успех');
     }
