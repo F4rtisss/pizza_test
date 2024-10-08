@@ -43,7 +43,7 @@ class OrderService
     /**
      * Получить заказ по ID
      */
-    public function findById(int $orderId)
+    public function findById(string $orderId)
     {
         return $this->orderRepository->findById($orderId);
     }

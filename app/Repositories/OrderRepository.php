@@ -4,10 +4,11 @@ namespace App\Repositories;
 
 use App\Foundation\Repositories\DBRepository;
 use App\Traits\Makeable;
+use App\Traits\UniqueId;
 
 class OrderRepository extends DBRepository
 {
-    use Makeable;
+    use Makeable, UniqueId;
 
     /**
      * Получить данные с пагинацией
@@ -28,15 +29,17 @@ class OrderRepository extends DBRepository
     /**
      * Создать заказ
      */
-    public function store(): int
+    public function store(): string
     {
-        return $this->insert("INSERT INTO `orders` (`is_done`) VALUES (?)", [0]);
+        $this->insert("INSERT INTO `orders` (`id`) VALUES (?)", [$id = $this->getUniqueId('orders')]);
+
+        return $id;
     }
 
     /**
      * Добавить товары в заказ
      */
-    public function push(int $orderId, array $itemIds): void
+    public function push(string $orderId, array $itemIds): void
     {
         $placeholders = implode(',', array_fill(0, count($itemIds), '(?, ?)'));
 
@@ -53,7 +56,7 @@ class OrderRepository extends DBRepository
     /**
      * Найти заказ по ID
      */
-    public function findById(int $id): mixed
+    public function findById(string $id): mixed
     {
         $order = $this->first("SELECT * FROM `orders` WHERE `id` = ?", [$id]);
 
@@ -69,7 +72,7 @@ class OrderRepository extends DBRepository
     /**
      * Установить заказу статус: готов
      */
-    public function isDone(int $orderId): void
+    public function isDone(string $orderId): void
     {
         $this->update("UPDATE `orders` SET `is_done` = 1 WHERE `id` = ?", [$orderId]);
     }

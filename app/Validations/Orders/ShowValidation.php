@@ -18,8 +18,7 @@ class ShowValidation extends Validation
         /**
          * Валидируем поле: order_id
          */
-        $this->required('id')
-            ->isNumeric('id');
+        $this->required('id');
     }
 
     /**

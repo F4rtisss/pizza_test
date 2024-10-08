@@ -88,12 +88,14 @@ class OrderController extends Controller
         $order = Request::get('order');
 
         if ($order['is_done']) {
-            return $this->response()->error('Нельзя добавлять товары в завершённый заказ');
+            return $this->response()->error('Нельзя добавлять товары в завершённый заказ', [
+                'message' => 'Нельзя добавлять товары в завершённый заказ'
+            ]);
         }
 
         $this->orderRepository->push($order['id'], $validated['items']);
 
-        return $this->response()->success('Успех!');
+        return $this->response()->success('Успех!', ['success' => true]);
     }
 
     /**
@@ -105,11 +107,13 @@ class OrderController extends Controller
         $order = Request::get('order');
 
         if ($order['is_done']) {
-            return $this->response()->error('Нельзя добавлять товары в завершённый заказ');
+            return $this->response()->error('Нельзя добавлять товары в завершённый заказ', [
+                'message' => 'Нельзя добавлять товары в завершённый заказ'
+            ]);
         }
 
         $this->orderRepository->isDone($order['id']);
 
-        return $this->response()->success('Успех');
+        return $this->response()->success('Успех', ['success' => true]);
     }
 }

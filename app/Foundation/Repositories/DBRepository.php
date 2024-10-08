@@ -45,12 +45,12 @@ abstract class DBRepository
     /**
      * Вставка
      */
-    public function insert(string $sql, array $params = []): int
+    public function insert(string $sql, array $params = []): string
     {
         $state = $this->DBService->pdo->prepare($sql);
         $state->execute($params);
 
-        return (int) $this->DBService->pdo->lastInsertId();
+        return $this->DBService->pdo->lastInsertId();
     }
 
     /**
